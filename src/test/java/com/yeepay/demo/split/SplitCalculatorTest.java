@@ -32,6 +32,35 @@ class SplitCalculatorTest {
     }
 
     @Test
+    void sharesAddUpToOrderAmountWhenRoundingLosesACent() {
+        BigDecimal orderAmount = new BigDecimal("0.10");
+
+        List<SplitShare> shares = calculator.split(orderAmount, threeWayRules());
+
+        assertEquals(orderAmount, sum(shares));
+    }
+
+    @Test
+    void sharesAddUpToOrderAmountWhenRoundingGainsACent() {
+        BigDecimal orderAmount = new BigDecimal("1999.99");
+
+        List<SplitShare> shares = calculator.split(orderAmount, threeWayRules());
+
+        assertEquals(orderAmount, sum(shares));
+    }
+
+    private static List<SplitRule> threeWayRules() {
+        return List.of(
+                new SplitRule("M001", new BigDecimal("0.3333")),
+                new SplitRule("M002", new BigDecimal("0.3333")),
+                new SplitRule("M003", new BigDecimal("0.3334")));
+    }
+
+    private static BigDecimal sum(List<SplitShare> shares) {
+        return shares.stream().map(SplitShare::amount).reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    @Test
     void rejectsNullOrderAmount() {
         assertThrows(IllegalArgumentException.class,
                 () -> calculator.split(null, List.of(new SplitRule("M001", BigDecimal.ONE))));
