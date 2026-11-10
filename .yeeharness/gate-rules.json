@@ -1,4 +1,11 @@
 {
   "description": "业务层规约(R-xxx)。由 yeeHarness 进化捕获在 Owner 审批后追加，交付门禁每次运行都会读取。",
-  "rules": []
+  "rules": [
+    {
+      "id": "R-001",
+      "severity": "block",
+      "title": "分账份额禁止逐方独立舍入，尾差必须由一方承接",
+      "pattern": "new\\s+SplitShare\\([^;]*\\.setScale\\("
+    }
+  ]
 }
